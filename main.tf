@@ -1,8 +1,11 @@
-resource null_resource local_dtr {
+resource docker_container local_dtr {
+  name   = "local-registry"
+  image  = "registry:2"
 
-    provisioner "local-exec" {
-      command = "./scripts/local-dtr.sh"
-    }
+  ports {
+    internal = "5000"
+    external = "5000"
+  }
 }
 
 resource kind_cluster local {
@@ -31,7 +34,7 @@ containerdConfigPatches:
     endpoint = ["http://local-registry:5000"]
 KIONF
   
-  depends_on = [null_resource.local_dtr,]
+  depends_on = [docker_container.local_dtr,]
 }
 
 # get kube config

@@ -11,3 +11,5 @@ provider helm {
 }
 
 provider "kind" {}
+
+provider "docker" {}
