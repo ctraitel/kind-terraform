@@ -55,27 +55,16 @@ resource kubernetes_namespace cert_manager {
     depends_on = [local_file.kube_config]
 }
 
-# apply crds version 0.11
-resource null_resource crds {
+resource helm_release cert_manager_jetstack {
+  name          = "cert-manager"
+  repository    = "https://charts.jetstack.io"
+  chart         = "cert-manager"
+  version       = "v1.4.0"
+  namespace     = "cert-manager"
 
-    provisioner "local-exec" {
-      command = "export KUBE_CONFIG_PATH=~/.kube/config && kubectl apply -f cert-manager/00-crds.yaml"
-    }
-
-    depends_on = [kubernetes_namespace.cert_manager,]
-}
-
-# apply cert-manager version 0.12
-resource null_resource cert_manager_jetstack {
-    provisioner "local-exec" {
-      command = "export KUBE_CONFIG_PATH=~/.kube/config && kubectl apply -f cert-manager/cert-manager.yaml"
-    }
-    depends_on = [null_resource.crds,]
-}
-
-resource null_resource confirm_controller_manager {
-    provisioner "local-exec" {
-        command = "./scripts/confirm-cert-manager.sh"
-    }
-    depends_on = [null_resource.cert_manager_jetstack,]
+  set {
+    name  = "installCRDs"
+    value = "true"
+  }
+  depends_on = [kubernetes_namespace.cert_manager,]
 }

@@ -1,3 +1,0 @@
-resources:
-- 00-crds.yaml
-- cert-manager.yaml
