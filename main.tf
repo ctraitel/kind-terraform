@@ -68,3 +68,21 @@ resource helm_release cert_manager_jetstack {
   }
   depends_on = [kubernetes_namespace.cert_manager,]
 }
+
+resource kubernetes_namespace kubernetes_dashboard {
+    metadata {
+        name = "kubernetes-dashboard"
+    }
+
+    depends_on = [helm_release.cert_manager_jetstack,]
+}
+
+resource helm_release kubernetes_dashboard {
+  name        = "kubernetes-dashboard"
+  repository  = "https://kubernetes.github.io/dashboard"
+  chart       = "kubernetes-dashboard"
+  version     = "4.3.1"
+  namespace   = "kubernetes-dashboard"
+
+  depends_on = [kubernetes_namespace.kubernetes_dashboard,]
+}
