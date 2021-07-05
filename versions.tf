@@ -19,5 +19,9 @@ terraform {
             source  = "kreuzwerker/docker"
             version = "2.13.0"
         }
+         kubectl = {
+      source = "gavinbunney/kubectl"
+      version = "1.11.2"
+    }
     }
 }
